@@ -7,19 +7,18 @@ export default class NavBar extends Component{
     render(){
         return(
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+            <Link to={"/"} className="navbar-brand">Inicio</Link>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
-                    <Link to={"/"} className="navbar-brand">Inicio</Link>
-                    <Link to={"/conocenos"} className="nav-link">Conocenos</Link>
-                    <Link to={"/contacto"} className="nav-link">Contacto</Link>
+                <Link to={"/conocenos"} className="nav-link">Conocenos</Link>
+                <Link to={"/contacto"} className="nav-link">Contacto</Link>
                 </Nav>
-                <Navbar.Collapse className="justify-content-end">
-                    <Navbar.Text>
-                        <Link to={"/registro"} className="nav-link">Registrarse</Link>
-                    </Navbar.Text>
-                    <Navbar.Text>
-                        <Link to={"/inicioSesion"} className="nav-link">Iniciar Sesión</Link>
-                        </Navbar.Text>
-                </Navbar.Collapse>
+                <Nav>
+                <Link to={"/registro"} className="nav-link">Registrarse</Link>
+                <Link to={"/inicioSesion"} className="nav-link">Iniciar Sesión</Link>
+                </Nav>
+            </Navbar.Collapse>
             </Navbar>
         );
     }

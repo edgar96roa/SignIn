@@ -6,21 +6,6 @@ const marginTop = {
     marginBottom: "5%"
 };
 
-const formValid = ({ formErrors, ...rest }) => {
-    let valid = true;
-  
-    // validate form errors being empty
-    Object.values(formErrors).forEach(val => {
-      val.length > 0 && (valid = false);
-    });
-
-    Object.values(rest).forEach(val => {
-        (valid = false);
-    });
-  
-    return valid;
-  };  
-
 export default class Registro extends Component {
     constructor(props){
         super(props);
@@ -30,45 +15,33 @@ export default class Registro extends Component {
     }
 
     initialState = {
-        id:'', nombre:'', primerApellido:'', segundoApellido:'', correo:'', contrasena:'', contrasena2:'', perfil:'',
-        formErrors:{ id:'', nombre:'', primerApellido:'', segundoApellido:'', correo:'', contrasena:'', contrasena2:'', perfil:'' }
+        id:'', nombre:'', primerApellido:'', segundoApellido:'', correo:'', contrasena:'', confirmacionContrasena:'', perfil:'',
+        errors:{ id:'', nombre:'', primerApellido:'', segundoApellido:'', correo:'', contrasena:'', confirmacionContrasena:'', perfil:'' }
     };
 
-    validarLongitudContrasena = e => {
-        const passwordValidator = require('password-validator');
-        const valido = new passwordValidator();
-        const contrasena = this.state;
+    validarLongitudContrasena = () => {
+        var passwordValidator = require('password-validator');
 
-        valido.is().min(3).is().max(8);
-        console.log(valido.validate(contrasena));
+        const contrasena = this.state.contrasena;
 
-        let formErrors = this.state.formErrors;
+        // Creando el schema
+        var schema = new passwordValidator();
 
-        if(valido.validate(contrasena)===false) {
-            formErrors.contrasena = "Debe tener entre 3 y 8 caracteres";
-        }else{
-            formErrors.contrasena = "";
-        }
+        // Agregando propiedades
+        schema
+        .is().min(8)                                 // Longitud mínima de 8
+        .has().uppercase()                           // Debe tener al menos una mayúscula
+        .has().lowercase()                           // Debe terner al menos una minúscula
+        .has().digits();                             // Debe tener al menos un número
+
+        console.log(this.state.contrasena);
+        console.log(schema.validate(contrasena)); //imprime true o false
+        console.log(contrasena + ": " + schema.validate(contrasena, { list: true })); //lista completa de errores
     }
 
     agregarUsuario = event => {
         event.preventDefault();
         this.validarLongitudContrasena();
-
-        if (formValid(this.state)) {
-            console.log(`
-              --SUBMITTING--
-              Nombre: ${this.state.nombre}
-              Primer Apellido: ${this.state.primerApellido}
-              Segundo Apellido: ${this.state.segundoApellido}
-              Correo: ${this.state.correo}
-              Contraseña: ${this.state.contrasena}
-              Contraseña 2: ${this.state.contrasena2}
-              Perfil: ${this.state.perfil}
-            `);
-          } else {
-            console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
-          }
         /*
         const usuario = {
             nombre: this.state.nombre,
@@ -100,7 +73,7 @@ export default class Registro extends Component {
     }
 
     render(){
-        const { nombre, primerApellido, segundoApellido, correo, contrasena, contrasena2 } = this.state;
+        const { nombre, primerApellido, segundoApellido, correo, contrasena, confirmacionContrasena } = this.state;
 
         return (
             <div className="row justify-content-center" style={marginTop}>
@@ -170,8 +143,8 @@ export default class Registro extends Component {
                                 <Form.Label>Repetir Contraseña</Form.Label>
                                 <Form.Control required autoComplete="off"
                                     type="password"
-                                    name="contrasena2"
-                                    value={contrasena2}
+                                    name="confirmacionContrasena"
+                                    value={confirmacionContrasena}
                                     onChange={this.usuarioChange}
                                     className={"bg-dark text-white"}
                                     placeholder="Ingrese nuevamente su contraseña"
